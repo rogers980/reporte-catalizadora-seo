@@ -406,7 +406,7 @@
 
     <div class="kpis">
       <div class="kpi done">
-        <div class="n">9 <small>/ 15</small></div>
+        <div class="n">11 <small>/ 15</small></div>
         <div class="label">Sitios limpios</div>
       </div>
       <div class="kpi progress">
@@ -414,12 +414,19 @@
         <div class="label">En progreso</div>
       </div>
       <div class="kpi pending">
-        <div class="n">2 <small>/ 15</small></div>
-        <div class="label">Pendientes</div>
+        <div class="n">0 <small>/ 15</small></div>
+        <div class="label">Pendientes (GSC)</div>
       </div>
       <div class="kpi">
-        <div class="n" style="color:var(--ink)">12 <small>/ 15</small></div>
+        <div class="n" style="color:var(--ink)">13 <small>/ 15</small></div>
         <div class="label">Informes listos</div>
+      </div>
+    </div>
+
+    <div class="callout" style="border-left-color:var(--good)">
+      <span class="mark" style="color:var(--good)">Hito</span>
+      <div>
+        <p><b>Las 15 propiedades ya tienen diagnóstico completo de Google Search Console.</b> Queda pendiente repetir el mismo trabajo en Bing Webmaster Tools, la decisión de contenido en mtdo.co, y confirmar en unos días que las validaciones de Londri cierren en "Passed".</p>
       </div>
     </div>
 
@@ -551,6 +558,21 @@
         <details class="site">
           <summary>
             <div class="site-id">
+              <span class="site-domain">psicologoestrada.com</span>
+              <span class="site-client">Lic. Fernando Estrada · repo dr-fernando-estrada</span>
+            </div>
+            <span class="pill limpio">Limpio</span>
+          </summary>
+          <div class="site-detail">
+            <p class="stat-line"><b>81</b> indexadas · <b>9</b> sin indexar</p>
+            <p>El sitio más sano de toda la auditoría. "Excluded by noindex" (3) son <code>/auth</code> (login), correcto e intencional. "Page with redirect" (2) son <code>http://</code> y <code>http://www.</code>, estándar. El resto es volumen insignificante. Sin defectos.</p>
+            <p>La property duplicada <code>dr-fernando-estrada.pages.dev</code> (la URL que Cloudflare Pages asigna a todo proyecto además del dominio propio) también se revisó: solo 1 indexada de 4, y las demás ya canonicalizan correctamente hacia este dominio. Comportamiento esperado, sin acción.</p>
+          </div>
+        </details>
+
+        <details class="site">
+          <summary>
+            <div class="site-id">
               <span class="site-domain">ximenatrillo.com</span>
               <span class="site-client">Xime · repo xime</span>
             </div>
@@ -633,40 +655,6 @@
       </div>
     </section>
 
-    <section class="group">
-      <p class="group-title">Pendientes</p>
-      <div class="site-list">
-
-
-        <details class="site">
-          <summary>
-            <div class="site-id">
-              <span class="site-domain">psicologoestrada.com</span>
-              <span class="site-client">Lic. Fernando Estrada · repo dr-fernando-estrada</span>
-            </div>
-            <span class="pill pendiente">Diagnosticado</span>
-          </summary>
-          <div class="site-detail">
-            <p class="stat-line"><b>81</b> indexadas · <b>9</b> sin indexar</p>
-            <p>Sitio sano a primera vista (4 motivos, volumen bajo). Pendiente de retomar.</p>
-          </div>
-        </details>
-
-        <details class="site">
-          <summary>
-            <div class="site-id">
-              <span class="site-domain">dr-fernando-estrada.pages.dev</span>
-              <span class="site-client">Property URL-prefix duplicada de psicologoestrada.com</span>
-            </div>
-            <span class="pill pendiente">Pendiente</span>
-          </summary>
-          <div class="site-detail">
-            <p>Probable propiedad obsoleta de una etapa anterior al dominio propio — confirmar si conviene quitarla de Search Console.</p>
-          </div>
-        </details>
-
-      </div>
-    </section>
 
     <section class="group">
       <p class="group-title">Bing Webmaster Tools</p>
