@@ -406,7 +406,7 @@
 
     <div class="kpis">
       <div class="kpi done">
-        <div class="n">7 <small>/ 15</small></div>
+        <div class="n">8 <small>/ 15</small></div>
         <div class="label">Sitios limpios</div>
       </div>
       <div class="kpi progress">
@@ -414,11 +414,11 @@
         <div class="label">En progreso</div>
       </div>
       <div class="kpi pending">
-        <div class="n">4 <small>/ 15</small></div>
+        <div class="n">3 <small>/ 15</small></div>
         <div class="label">Pendientes</div>
       </div>
       <div class="kpi">
-        <div class="n" style="color:var(--ink)">10 <small>/ 15</small></div>
+        <div class="n" style="color:var(--ink)">11 <small>/ 15</small></div>
         <div class="label">Informes listos</div>
       </div>
     </div>
@@ -534,6 +534,23 @@
           </div>
         </details>
 
+        <details class="site">
+          <summary>
+            <div class="site-id">
+              <span class="site-domain">ximenatrillo.com</span>
+              <span class="site-client">Xime · repo xime</span>
+            </div>
+            <span class="pill limpio">Limpio</span>
+          </summary>
+          <div class="site-detail">
+            <p class="stat-line"><b>522</b> indexadas · <b>402</b> sin indexar</p>
+            <h4>239 "Page with redirect"</h4>
+            <p>El sitio migró <code>/blog/&lt;slug&gt;</code> → <code>/articulos/&lt;slug&gt;</code>. Verificado en vivo: redirige correctamente (301). No es un bug.</p>
+            <h4>34 "Excluded by noindex tag" — investigado a fondo, es intencional</h4>
+            <p>Esto casi se reporta como bug real: cualquier URL inventada responde 200 sin <code>noindex</code> visible por <code>curl</code>. Revisando el código se encontró que es <b>decisión explícita de la clienta</b> — comentario en <code>Proximamente.tsx</code> cita feedback textual de Ximena (01-jun-2026): <i>"quitar error 404, crear rutas con mensaje próximamente"</i>. La ruta catch-all (<code>*</code>) del router usa la misma página "Próximamente" tanto para secciones reales en construcción como para URLs que no existen, mostrando un mensaje de marca en vez de un 404 duro — y sí aplica <code>noindex</code>, solo que del lado del cliente (React), por eso <code>curl</code> no lo veía. <b>Verificado en navegador real con el DOM ya hidratado:</b> <code>&lt;meta name="robots" content="noindex, follow"&gt;</code> presente. Coincide exactamente con los 34 que reporta GSC. <b>Conclusión: no es un bug — es el comportamiento que el sitio está diseñado a propósito para tener.</b> Se descartó un fix que se iba a aplicar por error antes de confirmar esto.</p>
+          </div>
+        </details>
+
       </div>
     </section>
 
@@ -631,19 +648,6 @@
           <div class="site-detail">
             <p class="stat-line"><b>81</b> indexadas · <b>9</b> sin indexar</p>
             <p>Sitio sano a primera vista (4 motivos, volumen bajo). Pendiente de retomar.</p>
-          </div>
-        </details>
-
-        <details class="site">
-          <summary>
-            <div class="site-id">
-              <span class="site-domain">ximenatrillo.com</span>
-              <span class="site-client">Xime</span>
-            </div>
-            <span class="pill pendiente">Pendiente</span>
-          </summary>
-          <div class="site-detail">
-            <p>Sin diagnosticar todavía.</p>
           </div>
         </details>
 
