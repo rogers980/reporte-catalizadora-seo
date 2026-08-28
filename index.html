@@ -414,11 +414,11 @@
         <div class="label">En progreso</div>
       </div>
       <div class="kpi pending">
-        <div class="n">5 <small>/ 15</small></div>
+        <div class="n">4 <small>/ 15</small></div>
         <div class="label">Pendientes</div>
       </div>
       <div class="kpi">
-        <div class="n" style="color:var(--ink)">9 <small>/ 15</small></div>
+        <div class="n" style="color:var(--ink)">10 <small>/ 15</small></div>
         <div class="label">Informes listos</div>
       </div>
     </div>
@@ -583,6 +583,26 @@
     </section>
 
     <section class="group">
+      <p class="group-title">En manos de otro esfuerzo — no se toca desde esta auditoría</p>
+      <div class="site-list">
+        <details class="site">
+          <summary>
+            <div class="site-id">
+              <span class="site-domain">trulynolen.com.gt</span>
+              <span class="site-client">Truly Nolen Guatemala · repo real: chinch-bug-buster</span>
+            </div>
+            <span class="pill decision">Otro equipo</span>
+          </summary>
+          <div class="site-detail">
+            <p class="stat-line"><b>11.3K</b> indexadas · <b>581K</b> sin indexar</p>
+            <p>El sitio más grande de la lista por mucho. Causa raíz confirmada: mismo patrón del resto de la flota (URLs <code>.html</code> y limpias ambas en 200), pero a escala mucho mayor — <b>771 de 871 posts huérfanos</b> (sin enlace interno) y <b>446 con slug roto</b> (51%).</p>
+            <p>No se tocó porque ya es un esfuerzo dedicado y activo: "ola de rescate de indexación" con línea base congelada desde el 31-jul, y el 24-ago se instaló formalmente el método MAGIA con QA propio. Duplicar el trabajo desde acá pisaría un proceso que ya tiene mediciones y responsables.</p>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <section class="group">
       <p class="group-title">Pendientes</p>
       <div class="site-list">
 
@@ -611,20 +631,6 @@
           <div class="site-detail">
             <p class="stat-line"><b>81</b> indexadas · <b>9</b> sin indexar</p>
             <p>Sitio sano a primera vista (4 motivos, volumen bajo). Pendiente de retomar.</p>
-          </div>
-        </details>
-
-        <details class="site">
-          <summary>
-            <div class="site-id">
-              <span class="site-domain">trulynolen.com.gt</span>
-              <span class="site-client">Truly Nolen Guatemala</span>
-            </div>
-            <span class="pill pendiente">Grande — sin empezar</span>
-          </summary>
-          <div class="site-detail">
-            <p class="stat-line"><b>11.3K</b> indexadas · <b>581K</b> sin indexar</p>
-            <p>Sitio de escala mucho mayor a los demás — 102,875 "Soft 404" y 452,288 "Crawled — currently not indexed". Parece un problema estructural de páginas generadas en masa (franquicias/ubicaciones), no un fix rápido. Se decidió posponerlo para no bloquear el resto del avance.</p>
           </div>
         </details>
 
