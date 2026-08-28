@@ -401,12 +401,12 @@
       <span class="eyebrow">Catalizadora · SEO / Indexación</span>
       <h1>Auditoría de Indexación — GSC y Bing</h1>
       <p class="subhead">Todas las propiedades verificadas en Search Console de Catalizadora: qué encontramos, qué se reparó y qué sigue pendiente. Orden de Pablo, 27-ago-2026.</p>
-      <span class="updated">Última actualización: 27 de agosto de 2026, 9:00 PM</span>
+      <span class="updated">Última actualización: 27 de agosto de 2026, 9:30 PM</span>
     </header>
 
     <div class="kpis">
       <div class="kpi done">
-        <div class="n">5 <small>/ 15</small></div>
+        <div class="n">6 <small>/ 15</small></div>
         <div class="label">Sitios limpios</div>
       </div>
       <div class="kpi progress">
@@ -414,11 +414,11 @@
         <div class="label">En progreso</div>
       </div>
       <div class="kpi pending">
-        <div class="n">8 <small>/ 15</small></div>
+        <div class="n">6 <small>/ 15</small></div>
         <div class="label">Pendientes</div>
       </div>
       <div class="kpi">
-        <div class="n" style="color:var(--ink)">7 <small>/ 15</small></div>
+        <div class="n" style="color:var(--ink)">8 <small>/ 15</small></div>
         <div class="label">Informes listos</div>
       </div>
     </div>
@@ -428,6 +428,7 @@
       <div>
         <p><b>Los monitoreos automáticos de indexación quedaron apagados tras la migración de GitHub a GitLab CI (24-ago-2026).</b> En Londri, el <code>Pipeline Schedule</code> semanal existía y estaba bien configurado, pero quedó <code>active: false</code> y nunca volvió a correr — por eso nadie vio que los datos en Search Console estaban desactualizados.</p>
         <p>Ya reactivado en Londri. Falta confirmar si el mismo patrón se repite en el resto de los repos de clientes.</p>
+        <p><b>catalizadora.ai</b> queda fuera del alcance de esta auditoría — Pablo lo resolvió directamente.</p>
       </div>
     </div>
 
@@ -505,6 +506,20 @@
           </div>
         </details>
 
+        <details class="site">
+          <summary>
+            <div class="site-id">
+              <span class="site-domain">pabesfu.com</span>
+              <span class="site-client">Sitio personal de Pablo · repo pabesfu</span>
+            </div>
+            <span class="pill limpio">Limpio</span>
+          </summary>
+          <div class="site-detail">
+            <p class="stat-line"><b>6</b> indexadas · <b>18</b> sin indexar (24 páginas en total)</p>
+            <p>Sitio muy pequeño. Cada página existe en versión <code>.html</code> (personas) y <code>.md</code> (crawlers de IA, patrón GEO intencional junto con <code>llms.txt</code>). Los motivos de canonical/redirect encajan exactamente con esa duplicación a propósito. Sin defectos.</p>
+          </div>
+        </details>
+
       </div>
     </section>
 
@@ -568,20 +583,6 @@
           <div class="site-detail">
             <p class="stat-line"><b>172</b> indexadas · <b>298</b> sin indexar</p>
             <p>Repo vinculado (proyecto en fase F8 de MAGIA), diagnóstico de razones aún no profundizado.</p>
-          </div>
-        </details>
-
-        <details class="site">
-          <summary>
-            <div class="site-id">
-              <span class="site-domain">catalizadora.ai</span>
-              <span class="site-client">Sitio de la propia agencia</span>
-            </div>
-            <span class="pill pendiente">Diagnosticado</span>
-          </summary>
-          <div class="site-detail">
-            <p class="stat-line"><b>2.9K</b> indexadas · <b>799</b> sin indexar</p>
-            <p>Motivo dominante: "página con redireccionamiento" (243) — sin investigar todavía a qué corresponde.</p>
           </div>
         </details>
 
