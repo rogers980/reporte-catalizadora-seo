@@ -1,0 +1,717 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Auditoría de Indexación — Catalizadora</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --paper: #eef1f0;
+    --surface: #ffffff;
+    --surface-2: #e4e9e7;
+    --ink: #161b1e;
+    --ink-soft: #4d5a58;
+    --line: #ccd4d1;
+    --accent: #0e7d72;
+    --accent-soft: #d8ece9;
+    --good: #2f7a3a;
+    --good-bg: #e3f1e2;
+    --warn: #a86a1a;
+    --warn-bg: #f7ecd9;
+    --bad: #ab3b32;
+    --bad-bg: #f6e2df;
+    --pending: #6b7573;
+    --pending-bg: #e6e9e8;
+    --shadow: 0 1px 2px rgba(20,30,28,0.06), 0 8px 24px -12px rgba(20,30,28,0.18);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper: #10151a;
+      --surface: #171e23;
+      --surface-2: #1e2730;
+      --ink: #e9edec;
+      --ink-soft: #9babA6;
+      --line: #2c363d;
+      --accent: #5fd0c2;
+      --accent-soft: #1c3a37;
+      --good: #7ecb84;
+      --good-bg: #1c3423;
+      --warn: #e3ab55;
+      --warn-bg: #3a2e17;
+      --bad: #e6837a;
+      --bad-bg: #3a201d;
+      --pending: #8b9794;
+      --pending-bg: #232c31;
+      --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 12px 28px -14px rgba(0,0,0,0.6);
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper: #10151a;
+    --surface: #171e23;
+    --surface-2: #1e2730;
+    --ink: #e9edec;
+    --ink-soft: #9babA6;
+    --line: #2c363d;
+    --accent: #5fd0c2;
+    --accent-soft: #1c3a37;
+    --good: #7ecb84;
+    --good-bg: #1c3423;
+    --warn: #e3ab55;
+    --warn-bg: #3a2e17;
+    --bad: #e6837a;
+    --bad-bg: #3a201d;
+    --pending: #8b9794;
+    --pending-bg: #232c31;
+    --shadow: 0 1px 2px rgba(0,0,0,0.3), 0 12px 28px -14px rgba(0,0,0,0.6);
+  }
+
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  ::selection { background: var(--accent-soft); }
+  a { color: var(--accent); }
+
+  /* ---------- Gate ---------- */
+  #gate {
+    position: fixed;
+    inset: 0;
+    background: var(--paper);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    z-index: 100;
+  }
+  #gate .card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    box-shadow: var(--shadow);
+    padding: 36px 32px;
+    max-width: 360px;
+    width: 100%;
+    text-align: center;
+  }
+  #gate .eyebrow {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    display: block;
+    margin-bottom: 10px;
+  }
+  #gate h1 {
+    font-family: "Fraunces", Georgia, serif;
+    font-weight: 600;
+    font-size: 1.5rem;
+    margin: 0 0 8px;
+  }
+  #gate p {
+    color: var(--ink-soft);
+    font-size: 0.92rem;
+    margin: 0 0 22px;
+  }
+  #gate input {
+    width: 100%;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 1.3rem;
+    letter-spacing: 0.3em;
+    text-align: center;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid var(--line);
+    background: var(--paper);
+    color: var(--ink);
+    margin-bottom: 14px;
+  }
+  #gate input:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+  #gate button {
+    width: 100%;
+    font-family: "IBM Plex Sans", sans-serif;
+    font-weight: 600;
+    font-size: 0.95rem;
+    padding: 11px;
+    border-radius: 8px;
+    border: none;
+    background: var(--accent);
+    color: var(--surface);
+    cursor: pointer;
+  }
+  #gate button:hover { opacity: 0.92; }
+  #gate .err {
+    color: var(--bad);
+    font-size: 0.85rem;
+    margin-top: 12px;
+    min-height: 1.2em;
+  }
+
+  #content { display: none; }
+  #content.show { display: block; }
+
+  .wrap {
+    max-width: 920px;
+    margin: 0 auto;
+    padding: 56px 24px 96px;
+  }
+
+  header.masthead {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 40px;
+    padding-bottom: 28px;
+    border-bottom: 1px solid var(--line);
+  }
+  .eyebrow {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  h1 {
+    font-family: "Fraunces", Georgia, serif;
+    font-weight: 600;
+    font-size: clamp(2rem, 4.5vw, 2.7rem);
+    line-height: 1.08;
+    margin: 0;
+    text-wrap: balance;
+    letter-spacing: -0.01em;
+  }
+  .subhead {
+    color: var(--ink-soft);
+    font-size: 1.02rem;
+    max-width: 62ch;
+  }
+  .updated {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.82rem;
+    color: var(--ink-soft);
+  }
+
+  .kpis {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: var(--line);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 40px;
+    box-shadow: var(--shadow);
+  }
+  .kpi {
+    background: var(--surface);
+    padding: 20px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .kpi .n {
+    font-family: "IBM Plex Mono", monospace;
+    font-variant-numeric: tabular-nums;
+    font-size: 1.9rem;
+    font-weight: 600;
+    line-height: 1;
+  }
+  .kpi .n small { font-size: 1rem; color: var(--ink-soft); font-weight: 400; }
+  .kpi .label {
+    font-size: 0.78rem;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .kpi.done .n { color: var(--good); }
+  .kpi.progress .n { color: var(--warn); }
+  .kpi.pending .n { color: var(--pending); }
+
+  @media (max-width: 640px) {
+    .kpis { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  .callout {
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--bad);
+    background: var(--surface);
+    border-radius: 8px;
+    padding: 18px 20px;
+    margin-bottom: 44px;
+    display: flex;
+    gap: 14px;
+  }
+  .callout .mark {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--bad);
+    white-space: nowrap;
+    padding-top: 2px;
+  }
+  .callout p { margin: 0 0 8px; }
+  .callout p:last-child { margin-bottom: 0; }
+
+  section.group { margin-bottom: 44px; }
+  .group-title {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin: 0 0 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .group-title::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: var(--line);
+  }
+
+  .site-list { display: flex; flex-direction: column; gap: 10px; }
+
+  .site {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    box-shadow: var(--shadow);
+  }
+  .site > summary {
+    list-style: none;
+    cursor: pointer;
+    padding: 16px 18px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .site > summary::-webkit-details-marker { display: none; }
+  .site > summary::before {
+    content: "→";
+    font-family: "IBM Plex Mono", monospace;
+    color: var(--ink-soft);
+    transition: transform 0.15s ease;
+    flex-shrink: 0;
+  }
+  .site[open] > summary::before { transform: rotate(90deg); }
+
+  .site-id { display: flex; flex-direction: column; gap: 2px; min-width: 0; flex: 1; }
+  .site-domain {
+    font-family: "IBM Plex Mono", monospace;
+    font-weight: 500;
+    font-size: 0.98rem;
+    overflow-wrap: anywhere;
+  }
+  .site-client { font-size: 0.85rem; color: var(--ink-soft); }
+
+  .pill {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.03em;
+    padding: 4px 10px;
+    border-radius: 100px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .pill.limpio { color: var(--good); background: var(--good-bg); }
+  .pill.progreso { color: var(--warn); background: var(--warn-bg); }
+  .pill.pendiente { color: var(--pending); background: var(--pending-bg); }
+  .pill.decision { color: var(--bad); background: var(--bad-bg); }
+
+  .site-detail {
+    padding: 0 18px 20px 46px;
+    border-top: 1px solid var(--line);
+    margin-top: 0;
+    padding-top: 16px;
+  }
+  .site-detail h4 {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--ink-soft);
+    margin: 16px 0 6px;
+  }
+  .site-detail h4:first-child { margin-top: 0; }
+  .site-detail p { margin: 0 0 10px; }
+  .site-detail ul { margin: 0 0 10px; padding-left: 1.1em; }
+  .site-detail li { margin-bottom: 4px; }
+  .site-detail code {
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.88em;
+    background: var(--surface-2);
+    padding: 0.1em 0.35em;
+    border-radius: 4px;
+  }
+  .stat-line {
+    font-family: "IBM Plex Mono", monospace;
+    font-variant-numeric: tabular-nums;
+    font-size: 0.9rem;
+    color: var(--ink-soft);
+    margin-bottom: 12px;
+  }
+  .stat-line b { color: var(--ink); font-weight: 600; }
+
+  footer {
+    margin-top: 56px;
+    padding-top: 20px;
+    border-top: 1px solid var(--line);
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 0.78rem;
+    color: var(--ink-soft);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<div id="gate">
+  <div class="card">
+    <span class="eyebrow">Catalizadora · Acceso restringido</span>
+    <h1>Auditoría de Indexación</h1>
+    <p>Ingresa el código que te compartió Roger para ver el reporte.</p>
+    <form id="gate-form" autocomplete="off">
+      <input id="gate-code" type="text" inputmode="numeric" maxlength="8" placeholder="Código" aria-label="Código de acceso">
+      <button type="submit">Entrar</button>
+      <div class="err" id="gate-err"></div>
+    </form>
+  </div>
+</div>
+
+<div id="content">
+  <div class="wrap">
+
+    <header class="masthead">
+      <span class="eyebrow">Catalizadora · SEO / Indexación</span>
+      <h1>Auditoría de Indexación — GSC y Bing</h1>
+      <p class="subhead">Todas las propiedades verificadas en Search Console de Catalizadora: qué encontramos, qué se reparó y qué sigue pendiente. Orden de Pablo, 27-ago-2026.</p>
+      <span class="updated">Última actualización: 27 de agosto de 2026, 9:00 PM</span>
+    </header>
+
+    <div class="kpis">
+      <div class="kpi done">
+        <div class="n">5 <small>/ 15</small></div>
+        <div class="label">Sitios limpios</div>
+      </div>
+      <div class="kpi progress">
+        <div class="n">2 <small>/ 15</small></div>
+        <div class="label">En progreso</div>
+      </div>
+      <div class="kpi pending">
+        <div class="n">8 <small>/ 15</small></div>
+        <div class="label">Pendientes</div>
+      </div>
+      <div class="kpi">
+        <div class="n" style="color:var(--ink)">7 <small>/ 15</small></div>
+        <div class="label">Informes listos</div>
+      </div>
+    </div>
+
+    <div class="callout">
+      <span class="mark">Hallazgo transversal</span>
+      <div>
+        <p><b>Los monitoreos automáticos de indexación quedaron apagados tras la migración de GitHub a GitLab CI (24-ago-2026).</b> En Londri, el <code>Pipeline Schedule</code> semanal existía y estaba bien configurado, pero quedó <code>active: false</code> y nunca volvió a correr — por eso nadie vio que los datos en Search Console estaban desactualizados.</p>
+        <p>Ya reactivado en Londri. Falta confirmar si el mismo patrón se repite en el resto de los repos de clientes.</p>
+      </div>
+    </div>
+
+    <section class="group">
+      <p class="group-title">Limpios — sin defectos de código</p>
+      <div class="site-list">
+
+        <details class="site">
+          <summary>
+            <div class="site-id">
+              <span class="site-domain">doctoraligia.com</span>
+              <span class="site-client">Dra. Ligia · repo dra-ligia</span>
+            </div>
+            <span class="pill limpio">Limpio</span>
+          </summary>
+          <div class="site-detail">
+            <p class="stat-line"><b>173</b> indexadas · <b>6</b> sin indexar</p>
+            <p>Los 3 "page with redirect" son alias 301 intencionales y documentados (<code>post-aliases.ts</code>): el motor de contenido generó posts duplicados y se conserva el que ya tenía impresiones reales en Search Console. Los otros 3 son backlog normal de rastreo, ya en proceso. No requiere ningún cambio.</p>
+          </div>
+        </details>
+
+        <details class="site">
+          <summary>
+            <div class="site-id">
+              <span class="site-domain">elhilar.com.mx</span>
+              <span class="site-client">El Hilar (colegio) · repo hilar</span>
+            </div>
+            <span class="pill limpio">Limpio</span>
+          </summary>
+          <div class="site-detail">
+            <p class="stat-line"><b>787</b> indexadas · <b>1.17K</b> sin indexar</p>
+            <p>983 páginas en "page with redirect" — el motivo dominante. Se probaron 4 URLs legacy de WordPress en vivo: las 4 redirigen correctamente (301 al destino esperado). El código tiene dos candados de build que impiden el fallo típico de Cloudflare Pages (~100 reglas de <code>_redirects</code>, descarta el resto en silencio). Solo falta pedir "Validate Fix" en Search Console.</p>
+          </div>
+        </details>
+
+        <details class="site">
+          <summary>
+            <div class="site-id">
+              <span class="site-domain">helloheroe.ai</span>
+              <span class="site-client">Hello Heroe · repo helloheroe</span>
+            </div>
+            <span class="pill limpio">Limpio</span>
+          </summary>
+          <div class="site-detail">
+            <p class="stat-line"><b>872</b> indexadas · <b>74</b> sin indexar</p>
+            <p>53 páginas de blog en "404" — probadas en vivo, las 3 muestreadas responden 200 hoy. Es la cola de un incidente ya cerrado ("810 posts devolvían 404", corregido el 28-jul con 7 reglas nuevas en <code>CLAUDE.md</code>). No hay defecto activo.</p>
+          </div>
+        </details>
+
+        <details class="site">
+          <summary>
+            <div class="site-id">
+              <span class="site-domain">hellomind.studio</span>
+              <span class="site-client">Hello Mind · repo hellomind</span>
+            </div>
+            <span class="pill limpio">Limpio</span>
+          </summary>
+          <div class="site-detail">
+            <p class="stat-line"><b>215</b> indexadas · <b>526</b> sin indexar</p>
+            <p>486 páginas en "discovered — not indexed": dominio adquirido hace ~2 meses con publicación activa de blog, backlog normal de rastreo (verificado: 200 real, sitemap correcto, robots.txt permite el rastreo). Los 33 "redirect" son http→https estándar. Sin defectos.</p>
+          </div>
+        </details>
+
+        <details class="site">
+          <summary>
+            <div class="site-id">
+              <span class="site-domain">lumilugt.com</span>
+              <span class="site-client">Lumilu · hub pigeon-lumilu</span>
+            </div>
+            <span class="pill limpio">Limpio</span>
+          </summary>
+          <div class="site-detail">
+            <p class="stat-line"><b>274</b> indexadas · <b>12</b> sin indexar</p>
+            <p>Los 3 redirects son alias de una prueba A/B ya cerrada, documentados en el código. Sin defectos.</p>
+          </div>
+        </details>
+
+      </div>
+    </section>
+
+    <section class="group">
+      <p class="group-title">En progreso — reparado, validando</p>
+      <div class="site-list">
+
+        <details class="site" open>
+          <summary>
+            <div class="site-id">
+              <span class="site-domain">londrigt.com</span>
+              <span class="site-client">Londri · repo londri-5e8242da</span>
+            </div>
+            <span class="pill progreso">En progreso</span>
+          </summary>
+          <div class="site-detail">
+            <p class="stat-line"><b>1.88K</b> indexadas · <b>2K</b> sin indexar</p>
+            <h4>Causa raíz</h4>
+            <p>El cron semanal (<code>gates-indexacion</code>) que audita las 1,816 URLs de producción quedó desactivado tras la migración a GitLab CI — nunca corrió, así que nadie vio que los datos de Search Console estaban viejos.</p>
+            <h4>Corregido</h4>
+            <ul>
+              <li>Reactivado el pipeline programado (requirió tomar ownership).</li>
+              <li>Ejecutado manualmente: <b>0 de 12 verificaciones en falla</b> — el código está sano.</li>
+              <li>Se solicitó "Validate Fix" en las 6 razones que estaban en "Failed" → todas en "Started".</li>
+            </ul>
+            <p>De paso: la cuenta de GitLab de Roger necesitaba verificación de identidad (teléfono) para poder correr pipelines — ya resuelto, y sirve para el resto de los repos.</p>
+          </div>
+        </details>
+
+        <details class="site" open>
+          <summary>
+            <div class="site-id">
+              <span class="site-domain">mtdo.co</span>
+              <span class="site-client">MÉTODO Arquitectos · repo grupo-garcia/apps/metodo</span>
+            </div>
+            <span class="pill progreso">En progreso</span>
+          </summary>
+          <div class="site-detail">
+            <p class="stat-line"><b>2K</b> indexadas · <b>4.21K</b> sin indexar</p>
+            <p>Proyecto activo (F10, retroalimentación de Bernardo en curso). Se completó una re-medición que el equipo tenía pendiente desde el 25-ago: <b>verificado en navegador real</b> que el fix de enlazado interno del 4-ago ("ola 2") sí está funcionando — el hub de "filosofía" pasó de 24 a 464 enlaces visibles tras la hidratación.</p>
+            <h4>Pendiente de decisión, no de código</h4>
+            <p><span class="pill decision">Necesita decisión</span> 584 páginas en "Not found (404)" son URLs <code>.html</code> legacy. Investigado a fondo: los 3,294 posts actuales se generan completos (gate propio del build), y los slugs de ejemplo no tienen equivalente en el sitemap actual — es contenido que existió y ya fue eliminado, no un bug. Falta decidir: ¿se acepta como pérdida natural, o se redirige en bloque al hub temático más cercano para no perder la señal?</p>
+          </div>
+        </details>
+
+      </div>
+    </section>
+
+    <section class="group">
+      <p class="group-title">Pendientes</p>
+      <div class="site-list">
+
+        <details class="site">
+          <summary>
+            <div class="site-id">
+              <span class="site-domain">bernardogarcia.work</span>
+              <span class="site-client">Bernardo García · hub grupo-garcia</span>
+            </div>
+            <span class="pill pendiente">Diagnosticado</span>
+          </summary>
+          <div class="site-detail">
+            <p class="stat-line"><b>172</b> indexadas · <b>298</b> sin indexar</p>
+            <p>Repo vinculado (proyecto en fase F8 de MAGIA), diagnóstico de razones aún no profundizado.</p>
+          </div>
+        </details>
+
+        <details class="site">
+          <summary>
+            <div class="site-id">
+              <span class="site-domain">catalizadora.ai</span>
+              <span class="site-client">Sitio de la propia agencia</span>
+            </div>
+            <span class="pill pendiente">Diagnosticado</span>
+          </summary>
+          <div class="site-detail">
+            <p class="stat-line"><b>2.9K</b> indexadas · <b>799</b> sin indexar</p>
+            <p>Motivo dominante: "página con redireccionamiento" (243) — sin investigar todavía a qué corresponde.</p>
+          </div>
+        </details>
+
+        <details class="site">
+          <summary>
+            <div class="site-id">
+              <span class="site-domain">pigeonbebe.com</span>
+              <span class="site-client">Pigeon · hub pigeon-lumilu</span>
+            </div>
+            <span class="pill pendiente">Pendiente</span>
+          </summary>
+          <div class="site-detail">
+            <p>Misma marca hub que Lumilu (ya limpia) — probable estado similar, sin confirmar todavía.</p>
+          </div>
+        </details>
+
+        <details class="site">
+          <summary>
+            <div class="site-id">
+              <span class="site-domain">psicologoestrada.com</span>
+              <span class="site-client">Lic. Fernando Estrada · repo dr-fernando-estrada</span>
+            </div>
+            <span class="pill pendiente">Diagnosticado</span>
+          </summary>
+          <div class="site-detail">
+            <p class="stat-line"><b>81</b> indexadas · <b>9</b> sin indexar</p>
+            <p>Sitio sano a primera vista (4 motivos, volumen bajo). Pendiente de retomar.</p>
+          </div>
+        </details>
+
+        <details class="site">
+          <summary>
+            <div class="site-id">
+              <span class="site-domain">trulynolen.com.gt</span>
+              <span class="site-client">Truly Nolen Guatemala</span>
+            </div>
+            <span class="pill pendiente">Grande — sin empezar</span>
+          </summary>
+          <div class="site-detail">
+            <p class="stat-line"><b>11.3K</b> indexadas · <b>581K</b> sin indexar</p>
+            <p>Sitio de escala mucho mayor a los demás — 102,875 "Soft 404" y 452,288 "Crawled — currently not indexed". Parece un problema estructural de páginas generadas en masa (franquicias/ubicaciones), no un fix rápido. Se decidió posponerlo para no bloquear el resto del avance.</p>
+          </div>
+        </details>
+
+        <details class="site">
+          <summary>
+            <div class="site-id">
+              <span class="site-domain">ximenatrillo.com</span>
+              <span class="site-client">Xime</span>
+            </div>
+            <span class="pill pendiente">Pendiente</span>
+          </summary>
+          <div class="site-detail">
+            <p>Sin diagnosticar todavía.</p>
+          </div>
+        </details>
+
+        <details class="site">
+          <summary>
+            <div class="site-id">
+              <span class="site-domain">dr-fernando-estrada.pages.dev</span>
+              <span class="site-client">Property URL-prefix duplicada de psicologoestrada.com</span>
+            </div>
+            <span class="pill pendiente">Pendiente</span>
+          </summary>
+          <div class="site-detail">
+            <p>Probable propiedad obsoleta de una etapa anterior al dominio propio — confirmar si conviene quitarla de Search Console.</p>
+          </div>
+        </details>
+
+      </div>
+    </section>
+
+    <section class="group">
+      <p class="group-title">Bing Webmaster Tools</p>
+      <div class="site-list">
+        <details class="site">
+          <summary>
+            <div class="site-id">
+              <span class="site-domain">Las 15 propiedades</span>
+              <span class="site-client">Segunda mitad de la orden de Pablo</span>
+            </div>
+            <span class="pill pendiente">Sin empezar</span>
+          </summary>
+          <div class="site-detail">
+            <p>Todo el trabajo de esta página es solo Google Search Console. Falta repetir el mismo diagnóstico en Bing Webmaster Tools para cada propiedad.</p>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <footer>
+      Roger Soto · Catalizadora · generado con Claude Code
+    </footer>
+
+  </div>
+</div>
+
+<script>
+  (function () {
+    var CODE = "2390";
+    var KEY = "catalizadora-audit-ok";
+    var gate = document.getElementById("gate");
+    var content = document.getElementById("content");
+    var form = document.getElementById("gate-form");
+    var input = document.getElementById("gate-code");
+    var err = document.getElementById("gate-err");
+
+    function unlock() {
+      gate.style.display = "none";
+      content.classList.add("show");
+    }
+
+    try {
+      if (sessionStorage.getItem(KEY) === "1") unlock();
+    } catch (e) {}
+
+    form.addEventListener("submit", function (ev) {
+      ev.preventDefault();
+      if (input.value.trim() === CODE) {
+        try { sessionStorage.setItem(KEY, "1"); } catch (e) {}
+        unlock();
+      } else {
+        err.textContent = "Código incorrecto.";
+        input.value = "";
+        input.focus();
+      }
+    });
+  })();
+</script>
+
+</body>
+</html>
