@@ -401,21 +401,21 @@
       <span class="eyebrow">Catalizadora · SEO / Indexación</span>
       <h1>Auditoría de Indexación — GSC y Bing</h1>
       <p class="subhead">Todas las propiedades verificadas en Search Console de Catalizadora: qué encontramos, qué se reparó y qué sigue pendiente. Orden de Pablo, 27-ago-2026.</p>
-      <span class="updated">Última actualización: 27 de agosto de 2026, 9:45 PM</span>
+      <span class="updated">Última actualización: 30 de agosto de 2026</span>
     </header>
 
     <div class="kpis">
       <div class="kpi done">
         <div class="n">11 <small>/ 15</small></div>
-        <div class="label">Sitios limpios</div>
+        <div class="label">Sitios limpios (GSC)</div>
       </div>
       <div class="kpi progress">
         <div class="n">2 <small>/ 15</small></div>
         <div class="label">En progreso</div>
       </div>
-      <div class="kpi pending">
-        <div class="n">0 <small>/ 15</small></div>
-        <div class="label">Pendientes (GSC)</div>
+      <div class="kpi done">
+        <div class="n">13 <small>/ 15</small></div>
+        <div class="label">Sitios limpios (Bing)</div>
       </div>
       <div class="kpi">
         <div class="n" style="color:var(--ink)">13 <small>/ 15</small></div>
@@ -426,14 +426,14 @@
     <div class="callout" style="border-left-color:var(--good)">
       <span class="mark" style="color:var(--good)">Hito</span>
       <div>
-        <p><b>Las 15 propiedades ya tienen diagnóstico completo de Google Search Console.</b> Queda pendiente la decisión de contenido en mtdo.co, y confirmar en unos días que las validaciones de Londri cierren en "Passed".</p>
+        <p><b>Las 15 propiedades ya tienen diagnóstico completo de Google Search Console Y Bing Webmaster Tools.</b> Ningún bug de código nuevo salió de Bing. Queda pendiente la decisión de contenido en mtdo.co, y confirmar en unos días que las validaciones de Londri cierren en "Passed".</p>
       </div>
     </div>
 
-    <div class="callout" style="border-left-color:var(--warn)">
-      <span class="mark" style="color:var(--warn)">Bing Webmaster Tools</span>
+    <div class="callout" style="border-left-color:var(--good)">
+      <span class="mark" style="color:var(--good)">Bing Webmaster Tools — cerrado 30-ago</span>
       <div>
-        <p>Se importaron las 15 propiedades desde Google Search Console. Bing avisa que los datos tardan <b>hasta 48 horas</b> en procesarse — no hay nada que diagnosticar todavía. Se retoma en un par de días.</p>
+        <p>Se retomó tras las 48h de procesamiento. Resultado: <b>13/15 limpias</b>, 1 en manos de otro equipo (trulynolen.com.gt) y 1 fuera de alcance (catalizadora.ai). Los dos hallazgos que parecían reales — NOINDEX en <code>elhilar.com.mx/familia/</code> y títulos/meta descriptions duplicados en <code>londrigt.com</code> (URLs <code>.html</code> vs limpias) — se verificaron en vivo y son <b>datos de rastreos viejos de Bing, de antes de que se corrigieran esos mismos problemas durante la auditoría de GSC</b>: el código actual ya está bien, solo falta que Bing actualice su índice.</p>
       </div>
     </div>
 
@@ -664,20 +664,87 @@
 
 
     <section class="group">
-      <p class="group-title">Bing Webmaster Tools</p>
+      <p class="group-title">Bing Webmaster Tools — cerrado 30-ago-2026</p>
       <div class="site-list">
+
+        <details class="site" open>
+          <summary>
+            <div class="site-id">
+              <span class="site-domain">elhilar.com.mx</span>
+              <span class="site-client">382 clics · 15.2K impresiones</span>
+            </div>
+            <span class="pill limpio">Limpio</span>
+          </summary>
+          <div class="site-detail">
+            <p>Bing marcó <code>/familia/</code> (Portal de Familias) con etiqueta NOINDEX. Verificado en vivo: la página sirve hoy <code>&lt;meta name="robots" content="index, follow, ...&gt;</code> — sin NOINDEX. Es dato de un rastreo viejo, de antes de que se corrigiera; solo falta que Bing re-rastree. Sin acción de código.</p>
+          </div>
+        </details>
+
+        <details class="site" open>
+          <summary>
+            <div class="site-id">
+              <span class="site-domain">londrigt.com</span>
+              <span class="site-client">94 clics · 4.3K impresiones</span>
+            </div>
+            <span class="pill limpio">Limpio</span>
+          </summary>
+          <div class="site-detail">
+            <p>Bing marcó 171 páginas (106 posts) con título y meta description idénticos: cada post existe en <code>/blog/slug</code> y <code>/blog/slug.html</code>. Verificado en vivo (fetch + navegación real): <code>.html</code> ya hace <b>redirect 301</b> a la versión limpia. Dato de un rastreo previo al fix de redirects. Sin acción de código.</p>
+          </div>
+        </details>
+
         <details class="site">
           <summary>
             <div class="site-id">
-              <span class="site-domain">Las 15 propiedades</span>
-              <span class="site-client">Segunda mitad de la orden de Pablo</span>
+              <span class="site-domain">mtdo.co</span>
+              <span class="site-client">10 clics · 727 impresiones</span>
             </div>
-            <span class="pill pendiente">Sin empezar</span>
+            <span class="pill limpio">Limpio</span>
           </summary>
           <div class="site-detail">
-            <p>Todo el trabajo de esta página es solo Google Search Console. Falta repetir el mismo diagnóstico en Bing Webmaster Tools para cada propiedad.</p>
+            <p>Única recomendación: "Avoid IndexNow Batch Mode" — configuración del submission tool, no un bug de código ni de indexación. No aparece nada sobre los 584 URLs 404, ese hallazgo sigue siendo solo de GSC.</p>
           </div>
         </details>
+
+        <details class="site">
+          <summary>
+            <div class="site-id">
+              <span class="site-domain">doctoraligia.com, helloheroe.ai, lumilugt.com, pigeonbebe.com, pabesfu.com, bernardogarcia.work, ximenatrillo.com</span>
+              <span class="site-client">Tráfico bajo o cero en Bing</span>
+            </div>
+            <span class="pill limpio">Limpio</span>
+          </summary>
+          <div class="site-detail">
+            <p>Sin recomendaciones (pabesfu.com solo tiene la genérica de backlinks insuficientes, no accionable con código). Nada que corregir.</p>
+          </div>
+        </details>
+
+        <details class="site">
+          <summary>
+            <div class="site-id">
+              <span class="site-domain">hellomind.studio, psicologoestrada.com, dr-fernando-estrada.pages.dev</span>
+              <span class="site-client">Aún sin datos de tráfico en Bing</span>
+            </div>
+            <span class="pill limpio">Limpio</span>
+          </summary>
+          <div class="site-detail">
+            <p>Bing todavía muestra la pantalla de onboarding para estos 3 — dominios jóvenes o de bajo volumen, sin recomendaciones. Coincide con lo visto en GSC.</p>
+          </div>
+        </details>
+
+        <details class="site">
+          <summary>
+            <div class="site-id">
+              <span class="site-domain">trulynolen.com.gt</span>
+              <span class="site-client">103 clics · 4.9K impresiones</span>
+            </div>
+            <span class="pill decision">Otro equipo</span>
+          </summary>
+          <div class="site-detail">
+            <p>Bing también marca meta descriptions duplicadas (mismo patrón <code>.html</code>/limpia sin redirect que ya documentó el otro equipo) y backlinks insuficientes. No se investigó a fondo ni se corrigió — queda en manos de la "ola de rescate" ya en curso.</p>
+          </div>
+        </details>
+
       </div>
     </section>
 
