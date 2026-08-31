@@ -777,7 +777,15 @@
     <div class="callout">
       <span class="mark">Patrón repetido</span>
       <div>
-        <p>Dos hallazgos aparecen en casi toda la flota: <b>faltan headers de seguridad HTTP</b> (HSTS/CSP/X-Frame-Options) en 9 de 11 sitios, y <b><code>www</code> sirve 200 sin redirect 301 al apex</b> en varios. Ambos se resuelven con un archivo <code>public/_headers</code> por repo y una regla de Cloudflare — no requieren tocar la lógica de la app. Ningún cambio de código se aplicó todavía: todo quedó en modo lectura/reporte, a la espera de que Pablo revise.</p>
+        <p>Dos hallazgos aparecen en casi toda la flota: <b>faltan headers de seguridad HTTP</b> (HSTS/CSP/X-Frame-Options) en 9 de 11 sitios, y <b><code>www</code> sirve 200 sin redirect 301 al apex</b> en varios. Ambos se resuelven con un archivo <code>public/_headers</code> por repo y una regla de Cloudflare — no requieren tocar la lógica de la app.</p>
+      </div>
+    </div>
+
+    <div class="callout" style="border-left-color:var(--good)">
+      <span class="mark" style="color:var(--good)">Actualización — 31-ago, fixes listos en rama</span>
+      <div>
+        <p><b>10 de 11 repos ya tienen los fixes seguros aplicados y verificados</b> en una rama nueva (<code>fix/seo-tecnico-31ago</code>) en cada uno — commit local, sin push, sin tocar <code>main</code>/producción. Cada cambio se revisó dos veces contra el código real (no solo el autorreporte del agente que lo aplicó); en 2 de los 10 apareció un error real que se corrigió antes de darlo por bueno: un bug de carrera en el script de Amplitude de <code>pabesfu.com</code>, y una página de <code>helloheroe.ai</code> que se quedó sin <code>&lt;title&gt;</code> al quitar el fallback duplicado.</p>
+        <p>Quedan afuera de esta ronda: <code>hellomind.studio</code> (el repo local no tiene el frontend, hay que ubicar el real primero) y <code>psicologoestrada.com</code> (proyecto en pausa desde el 30-ago, no se reactiva sin decisión explícita). Falta que alguien revise cada rama y decida el merge — nada se sube a producción sin ese ok.</p>
       </div>
     </div>
 
