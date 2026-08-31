@@ -748,6 +748,203 @@
       </div>
     </section>
 
+    <header class="masthead" style="margin-top:64px;">
+      <span class="eyebrow">Catalizadora · SEO / Técnico</span>
+      <h1 style="font-size:clamp(1.6rem,3.5vw,2.2rem)">Auditoría Técnica SEO — 31-ago-2026</h1>
+      <p class="subhead">Pablo confirmó que el alcance de Roger es solo lo técnico, sin contenido ni keywords. Esta ronda cubre crawlability, seguridad, structured data, renderizado JS, Core Web Vitals de fuente e IndexNow en las 11 propiedades activas de la flota (fuera de esta ronda: <code>catalizadora.ai</code>, fuera de alcance, y <code>trulynolen.com.gt</code>, en manos de otro equipo).</p>
+      <span class="updated">31 de agosto de 2026</span>
+    </header>
+
+    <div class="kpis">
+      <div class="kpi done">
+        <div class="n">11 <small>/ 11</small></div>
+        <div class="label">Sitios auditados</div>
+      </div>
+      <div class="kpi progress">
+        <div class="n">8 <small>/ 11</small></div>
+        <div class="label">Con hallazgo crítico</div>
+      </div>
+      <div class="kpi">
+        <div class="n" style="color:var(--ink)">9 <small>/ 11</small></div>
+        <div class="label">Sin headers de seguridad</div>
+      </div>
+      <div class="kpi">
+        <div class="n" style="color:var(--ink)">~74</div>
+        <div class="label">Score técnico promedio</div>
+      </div>
+    </div>
+
+    <div class="callout">
+      <span class="mark">Patrón repetido</span>
+      <div>
+        <p>Dos hallazgos aparecen en casi toda la flota: <b>faltan headers de seguridad HTTP</b> (HSTS/CSP/X-Frame-Options) en 9 de 11 sitios, y <b><code>www</code> sirve 200 sin redirect 301 al apex</b> en varios. Ambos se resuelven con un archivo <code>public/_headers</code> por repo y una regla de Cloudflare — no requieren tocar la lógica de la app. Ningún cambio de código se aplicó todavía: todo quedó en modo lectura/reporte, a la espera de que Pablo revise.</p>
+      </div>
+    </div>
+
+    <section class="group">
+      <p class="group-title">Necesita atención — hallazgo crítico</p>
+      <div class="site-list">
+
+        <details class="site">
+          <summary>
+            <div class="site-id">
+              <span class="site-domain">psicologoestrada.com</span>
+              <span class="site-client">Lic. Fernando Estrada · repo dr-fernando-estrada</span>
+            </div>
+            <span class="pill decision">Score 52</span>
+          </summary>
+          <div class="site-detail">
+            <p class="stat-line">El más bajo de la flota — proyecto en pausa desde el 30-ago, esta auditoría fue solo lectura, no tocó nada de F8/F9</p>
+            <h4>Todo el sitio salvo el blog es un shell vacío para bots sin JS</h4>
+            <p>Home, <code>/agendar</code>, <code>/sobre-mi</code>, <code>/modalidades</code>, <code>/preguntas-frecuentes</code>, <code>/privacy</code>, <code>/terms</code> sirven el mismo título y descripción genéricos, con <code>&lt;div id="root"&gt;&lt;/div&gt;</code> vacío. El script <code>postbuild</code> del repo nunca llama al prerender de páginas, solo al de blog.</p>
+            <h4>Rutas de admin indexables en la práctica</h4>
+            <p><code>/admin</code>, <code>/auth</code>, <code>/enrolamiento</code>, <code>/reset-password</code> no tienen noindex real del lado del servidor, y robots.txt no las bloquea.</p>
+            <p>Además, el mismo contenido se sirve triplicado (apex, www, <code>dr-fernando-estrada.pages.dev</code>) sin canonical cruzado. Y hay una contradicción real en robots.txt: el toggle "Block AI Bots" de Cloudflare bloquea GPTBot/ClaudeBot a nivel de zona, mientras la sección manual del repo dice "welcome" a esos mismos bots — falta decidir cuál intención sigue vigente.</p>
+          </div>
+        </details>
+
+        <details class="site">
+          <summary>
+            <div class="site-id">
+              <span class="site-domain">pabesfu.com</span>
+              <span class="site-client">Sitio personal de Pablo · repo pabesfu</span>
+            </div>
+            <span class="pill decision">Score 60</span>
+          </summary>
+          <div class="site-detail">
+            <p class="stat-line">SPA 100% client-side, sin SSR ni prerender</p>
+            <p>El canonical de las subpáginas (<code>/manifiesto</code>, <code>/proyectos</code>) apunta a la home para cualquier bot sin JS. Cualquier URL inventada responde 200 con <code>index, follow</code> (soft-404). Dos páginas de trabajo de cliente — cotización de Truly Nolen y propuestas de logo — tienen <code>noindex</code> en React pero <code>index, follow</code> en el HTML crudo: indexables por accidente. La key de IndexNow está mal formateada (el archivo de verificación tiene el <code>.txt</code> incluido en el contenido), Bing la rechaza en silencio.</p>
+          </div>
+        </details>
+
+        <details class="site">
+          <summary>
+            <div class="site-id">
+              <span class="site-domain">bernardogarcia.work</span>
+              <span class="site-client">Bernardo García · hub grupo-garcia</span>
+            </div>
+            <span class="pill decision">Score 68</span>
+          </summary>
+          <div class="site-detail">
+            <p>Los ensayos reales (<code>/ideas/:slug</code>) no están en el script de prerender — quedan con <code>&lt;div id="root"&gt;&lt;/div&gt;</code> vacío para cualquier bot sin JS, justo los que el propio robots.txt invita explícitamente (GPTBot, ClaudeBot, PerplexityBot). Imagen hero de 778KB sin optimizar, candidata a LCP. Faltan headers de seguridad.</p>
+          </div>
+        </details>
+
+        <details class="site">
+          <summary>
+            <div class="site-id">
+              <span class="site-domain">lumilugt.com</span>
+              <span class="site-client">Lumilu · hub pigeon-lumilu</span>
+            </div>
+            <span class="pill decision">Score 74</span>
+          </summary>
+          <div class="site-detail">
+            <p>Imagen hero con <code>loading="lazy"</code> — retrasa el LCP justo en el elemento que más importa. Cero headers de seguridad HTTP. Fuentes cargadas con <code>@import</code> en CSS, sin preconnect. El resto está bien construido: SSG real vía Playwright, schema completo, <code>llms.txt</code> con reglas anti-afirmaciones médicas.</p>
+          </div>
+        </details>
+
+        <details class="site">
+          <summary>
+            <div class="site-id">
+              <span class="site-domain">hellomind.studio</span>
+              <span class="site-client">Hello Mind · repo hellomind</span>
+            </div>
+            <span class="pill decision">Sin score</span>
+          </summary>
+          <div class="site-detail">
+            <p class="stat-line">Sitio en modo "coming soon" pre-lanzamiento</p>
+            <p>Cero headers de seguridad en el documento HTML (los assets estáticos sí los tienen). Las 3 páginas legales (privacidad, términos, aviso) no tienen canonical. La navegación de esas páginas enlaza a <code>/programas</code>, <code>/blog</code>, <code>/hello-again</code>, que hoy redirigen a home — enlaces internos rotos.</p>
+          </div>
+        </details>
+
+        <details class="site">
+          <summary>
+            <div class="site-id">
+              <span class="site-domain">doctoraligia.com</span>
+              <span class="site-client">Dra. Ligia · repo dra-ligia</span>
+            </div>
+            <span class="pill decision">Score 78</span>
+          </summary>
+          <div class="site-detail">
+            <p>Cero headers de seguridad en toda la respuesta HTTP. Schema duplicado: dos bloques <code>Physician</code> distintos en el <code>&lt;head&gt;</code> de cada página (uno con <code>@id</code>, otro sin) — en un sitio médico (YMYL) esto puede leerse como entidad ambigua. El resto — SSR real, canonicals, sitemap defensivo que nunca sirve vacío — está muy bien resuelto.</p>
+          </div>
+        </details>
+
+        <details class="site">
+          <summary>
+            <div class="site-id">
+              <span class="site-domain">mtdo.co</span>
+              <span class="site-client">MÉTODO Arquitectos · repo grupo-garcia/apps/metodo</span>
+            </div>
+            <span class="pill decision">Score 78</span>
+          </summary>
+          <div class="site-detail">
+            <p>Mismo patrón de la flota: cero headers de seguridad, <code>www</code> sin redirect al apex. Lo bueno: <code>410 Gone</code> real (no un 404 plano) para el blog que Pablo ya podó, prerender por ruta real, y un mapa de 122 redirects del WordPress viejo bien documentado.</p>
+          </div>
+        </details>
+
+        <details class="site">
+          <summary>
+            <div class="site-id">
+              <span class="site-domain">londrigt.com</span>
+              <span class="site-client">Londri · repo londri-5e8242da</span>
+            </div>
+            <span class="pill decision">Score 80</span>
+          </summary>
+          <div class="site-detail">
+            <p>El CSP está puesto vía <code>&lt;meta&gt;</code> en vez de header HTTP — <code>frame-ancestors</code> no protege nada (confirmado por el propio navegador en consola). Confirmado también que los Pipeline Schedules de GitLab nunca se recrearon tras la migración a GitLab CI — no es solo que estén inactivos, no existen — así que el gate semanal de indexación no corre solo. Al correr el censo completo (1,816 URLs) todo salió sano; el único "fallo" fue el propio script de verificación, desactualizado desde un cambio de arquitectura anterior.</p>
+          </div>
+        </details>
+
+      </div>
+    </section>
+
+    <section class="group">
+      <p class="group-title">Sin hallazgo crítico — mejoras de alto/medio impacto</p>
+      <div class="site-list">
+
+        <details class="site">
+          <summary>
+            <div class="site-id">
+              <span class="site-domain">elhilar.com.mx</span>
+              <span class="site-client">El Hilar (colegio) · repo hilar</span>
+            </div>
+            <span class="pill limpio">Score 78</span>
+          </summary>
+          <div class="site-detail">
+            <p>El mecanismo de IndexNow client-side está roto por CORS desde siempre — nunca notificó nada a Bing, el error queda silenciado por un <code>.catch()</code> vacío. El CSP lleva tiempo en modo "Report-Only" sin promoverse a activo, en un sitio que maneja datos de familias vía Supabase. Detalle curioso: <code>/familia</code> (página pública) y <code>/familia/</code> con barra (portal privado) son contenido opuesto — cualquier link con una barra de más manda al lugar equivocado.</p>
+          </div>
+        </details>
+
+        <details class="site">
+          <summary>
+            <div class="site-id">
+              <span class="site-domain">helloheroe.ai</span>
+              <span class="site-client">Hello Heroe · repo helloheroe</span>
+            </div>
+            <span class="pill limpio">Sin score</span>
+          </summary>
+          <div class="site-detail">
+            <p>Meta tags duplicados en todas las páginas (description/og/twitter aparecen 2 veces): Helmet no reemplaza los tags estáticos del <code>index.html</code>, los suma. Riesgo real al compartir un link — WhatsApp/Facebook pueden tomar el genérico en vez del de la página. <code>www</code> sin redirect al apex. El resto es ejemplar: prerender con Playwright + gate que falla el build si algo queda mal, robots.txt muy bien segmentado por tipo de bot.</p>
+          </div>
+        </details>
+
+        <details class="site">
+          <summary>
+            <div class="site-id">
+              <span class="site-domain">pigeonbebe.com</span>
+              <span class="site-client">Pigeon Guatemala · hub pigeon-lumilu</span>
+            </div>
+            <span class="pill limpio">Score 78</span>
+          </summary>
+          <div class="site-detail">
+            <p>Todo el JS en un solo bundle sin code-splitting (~490KB comprimido en cada ruta). Falta preload/<code>fetchpriority</code> en la imagen hero. Nota aparte para confirmar con Pablo: las reseñas de producto en el schema vienen "adaptadas de fuentes públicas" según un comentario del propio código — vale confirmar la proveniencia antes de escalar el patrón a más productos.</p>
+          </div>
+        </details>
+
+      </div>
+    </section>
+
     <footer>
       Roger Soto · Catalizadora · generado con Claude Code
     </footer>
