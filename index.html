@@ -401,7 +401,7 @@
       <span class="eyebrow">Catalizadora · SEO / Indexación</span>
       <h1>Auditoría de Indexación — GSC y Bing</h1>
       <p class="subhead">Todas las propiedades verificadas en Search Console de Catalizadora: qué encontramos, qué se reparó y qué sigue pendiente. Orden de Pablo, 27-ago-2026.</p>
-      <span class="updated">Última actualización: 30 de agosto de 2026</span>
+      <span class="updated">Última actualización: 3 de septiembre de 2026</span>
     </header>
 
     <div class="kpis">
@@ -420,6 +420,14 @@
       <div class="kpi">
         <div class="n" style="color:var(--ink)">13 <small>/ 15</small></div>
         <div class="label">Informes listos</div>
+      </div>
+    </div>
+
+    <div class="callout" style="border-left-color:var(--accent)">
+      <span class="mark" style="color:var(--accent)">Cómo leer "Fallido" en este reporte</span>
+      <div>
+        <p><b>Ver "Fallido" en una fila de Search Console no significa que haya un error de código.</b> Es una etiqueta que pone Google, no nosotros: aparece cuando se le pide "Validar corrección" (Validate Fix) sobre URLs que antes quedaron excluidas por algún motivo (redirect, noindex, 404, etc.). A partir de ahí Google vuelve a rastrear esas URLs en oleadas — normalmente toma varios días, a veces semanas — y mientras ese ciclo no termina, el estado sigue mostrando "Fallido" aunque el código ya esté corregido y la página responda perfecto hoy mismo.</p>
+        <p>Es la diferencia entre <b>"el sitio tiene un bug"</b> y <b>"Google todavía no terminó de confirmar que el bug ya no existe"</b>. En esta auditoría, cada vez que aparece "Fallido" se verificó primero en vivo — con <code>curl</code>, navegador real, o un build/prerender completo — que la URL responde bien hoy. Si el código está sano, "Fallido" es solo el proceso de revalidación de Google en curso, no algo que requiera otra acción de nuestro lado. Solo sería motivo real de preocupación si, después de varias semanas, sigue en "Fallido" <b>y</b> la verificación en vivo también muestra el problema — ahí sí habría un bug real sin corregir.</p>
       </div>
     </div>
 
@@ -442,7 +450,7 @@
       <div>
         <p><b>Los monitoreos automáticos de indexación quedaron apagados tras la migración de GitHub a GitLab CI (24-ago-2026).</b> En Londri, el <code>Pipeline Schedule</code> semanal existía y estaba bien configurado, pero quedó <code>active: false</code> y nunca volvió a correr — por eso nadie vio que los datos en Search Console estaban desactualizados.</p>
         <p>Ya reactivado en Londri. Falta confirmar si el mismo patrón se repite en el resto de los repos de clientes.</p>
-        <p><b>catalizadora.ai</b> queda fuera del alcance de esta auditoría — Pablo lo resolvió directamente.</p>
+        <p><b>catalizadora.ai</b> queda fuera del alcance de esta auditoría — Pablo lo resolvió directamente. (Actualización 03-sep: aparte de eso se encontró y corrigió un H1 duplicado en el blog, sin relación con lo que resolvió Pablo — ver detalle más abajo.)</p>
       </div>
     </div>
 
@@ -789,6 +797,19 @@
       </div>
     </div>
 
+    <div class="callout" style="border-left-color:var(--good)">
+      <span class="mark" style="color:var(--good)">Actualización — 03-sep-2026, 3 fixes reales aplicados y en revisión</span>
+      <div>
+        <p>De los hallazgos de esta ronda técnica, <b>3 ya tienen el fix de código escrito, commiteado, pusheado a una rama nueva y con Merge Request enviado</b> — verificado dos veces cada uno con un build/prerender real (no solo lectura de código), ninguno mergeado a producción todavía, pendiente de revisión de Pablo:</p>
+        <ul>
+          <li><b>catalizadora.ai</b> (repo <code>catalizadora-zenith-061dc863</code>, rama <code>fix/blog-h1-duplicado-02sep</code>, MR !704): H1 duplicado en cada post de blog. Causa: <code>scripts/prerender-blog.mjs</code> comparaba el H1 generado del markdown contra el título esperado con una igualdad de texto exacta, que casi nunca coincidía — quedaban dos <code>&lt;h1&gt;</code> por post. Fix: se degrada el H1 del markdown a H2 antes de generar el HTML, y se remapea con <code>components</code> de <code>react-markdown</code> en <code>BlogPost.tsx</code>. Verificado con build real completo: 3,585 posts generados, post de prueba con h1=1, title=1, canonical=1, cero duplicados de ningún otro tag.</li>
+          <li><b>londrigt.com</b> (repo <code>londri-5e8242da</code>, rama <code>fix/blog-h1-duplicado-02sep</code>, MR !1): mismo síntoma, causa distinta — un bloque <code>&lt;div id="static-content"&gt;</code> en <code>index.html</code> trae un H1 de marca fijo ("Londri — Lavado a mano premium…") que el prerender reutilizaba sin cambios en cada post/hub. Fix: ese H1 fijo se degrada a H2 solo dentro del bloque static-content, antes de inyectar el H1 real del post. Verificado con build real: 1,680 posts generados, post de prueba con h1=1, title=1, canonical=1, sin otros duplicados.</li>
+          <li><b>helloheroe.ai</b> (repo <code>helloheroe</code>, rama <code>fix/meta-description-duplicada-02sep</code>, MR !15): el hallazgo de abajo ("Helmet no reemplaza, suma") ya tiene fix — se quitaron del <code>index.html</code> los 10 tags fijos que <code>Seo.tsx</code> ya pone dinámicamente por página (description, og:type/url/title/description/image+dimensiones, twitter:card/title/description/image). Verificado con build + prerender real (Chromium headless, <code>PRERENDER_BLOG_LIMIT=3</code>): antes 2 de cada tag, después 1 de cada uno con el valor correcto; home también verificada, conserva su propia description y og:url.</li>
+        </ul>
+        <p>De paso se amplió la verificación a los 9 sitios que hasta ahora solo se habían revisado por lo que reportaba Bing, esta vez con curl real contra home + una página de contenido real de cada uno (no solo lectura de código): <b><code>bernardogarcia.work</code>, <code>doctoraligia.com</code>, <code>elhilar.com.mx</code>, <code>hellomind.studio</code>, <code>lumilugt.com</code>, <code>mtdo.co</code>, <code>pigeonbebe.com</code> y <code>ximenatrillo.com</code> salieron limpios</b> — un solo h1, title, description, canonical, og:* y twitter:* por página, sin excepción. <code>elhilar.com.mx</code> usa el mismo patrón de <code>static-content</code> que Londri, pero bien implementado (cada página trae su propio contenido, no uno fijo reutilizado). Los 2 hallazgos de <code>psicologoestrada.com</code> y <code>pabesfu.com</code> (ver sus fichas abajo) se reconfirmaron tal cual — ninguno de los dos se tocó, uno por seguir en pausa y el otro pendiente de que Roger/Pablo decidan si vale la pena tocar un sitio personal.</p>
+      </div>
+    </div>
+
     <section class="group">
       <p class="group-title">Necesita atención — hallazgo crítico</p>
       <div class="site-list">
@@ -808,6 +829,7 @@
             <h4>Rutas de admin indexables en la práctica</h4>
             <p><code>/admin</code>, <code>/auth</code>, <code>/enrolamiento</code>, <code>/reset-password</code> no tienen noindex real del lado del servidor, y robots.txt no las bloquea.</p>
             <p>Además, el mismo contenido se sirve triplicado (apex, www, <code>dr-fernando-estrada.pages.dev</code>) sin canonical cruzado. Y hay una contradicción real en robots.txt: el toggle "Block AI Bots" de Cloudflare bloquea GPTBot/ClaudeBot a nivel de zona, mientras la sección manual del repo dice "welcome" a esos mismos bots — falta decidir cuál intención sigue vigente.</p>
+            <p><b>Reconfirmado 03-sep, sin tocar:</b> curl real contra <code>/</code> confirma <code>&lt;div id="root"&gt;&lt;/div&gt;</code> vacío, 0 <code>&lt;h1&gt;</code> y 0 canonical en el HTML servido — el proyecto sigue en pausa, Roger no autorizó ningún cambio de código, esto queda anotado para retomarlo antes de cualquier lanzamiento real.</p>
           </div>
         </details>
 
@@ -822,6 +844,7 @@
           <div class="site-detail">
             <p class="stat-line">SPA 100% client-side, sin SSR ni prerender</p>
             <p>El canonical de las subpáginas (<code>/manifiesto</code>, <code>/proyectos</code>) apunta a la home para cualquier bot sin JS. Cualquier URL inventada responde 200 con <code>index, follow</code> (soft-404). Dos páginas de trabajo de cliente — cotización de Truly Nolen y propuestas de logo — tienen <code>noindex</code> en React pero <code>index, follow</code> en el HTML crudo: indexables por accidente. La key de IndexNow está mal formateada (el archivo de verificación tiene el <code>.txt</code> incluido en el contenido), Bing la rechaza en silencio.</p>
+            <p><b>Reconfirmado 03-sep con curl real:</b> las 6 URLs del sitemap (<code>/manifiesto</code>, <code>/proyectos</code>, <code>/herramientas</code>, <code>/gaming-deportes</code>, <code>/guia-llm-seo</code>, <code>/automatizacion</code>) sirven byte a byte casi el mismo HTML que la home, mismo <code>&lt;title&gt;</code> genérico, mismo canonical apuntando a <code>/</code>. No se tocó — es sitio personal de Pablo, queda pendiente que él decida si es intencional (junto con el patrón <code>.md</code>/<code>llms.txt</code> ya documentado arriba) o si vale la pena diferenciarlo.</p>
           </div>
         </details>
 
@@ -934,6 +957,7 @@
           </summary>
           <div class="site-detail">
             <p>Meta tags duplicados en todas las páginas (description/og/twitter aparecen 2 veces): Helmet no reemplaza los tags estáticos del <code>index.html</code>, los suma. Riesgo real al compartir un link — WhatsApp/Facebook pueden tomar el genérico en vez del de la página. <code>www</code> sin redirect al apex. El resto es ejemplar: prerender con Playwright + gate que falla el build si algo queda mal, robots.txt muy bien segmentado por tipo de bot.</p>
+            <p><b>Corregido 03-sep (MR !15, pendiente de aprobación de Pablo):</b> se quitaron los 10 tags fijos redundantes del <code>index.html</code>. Verificado con build + prerender real que ya no quedan duplicados.</p>
           </div>
         </details>
 
